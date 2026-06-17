@@ -7,6 +7,7 @@ function MesEmprunts() {
     const [emprunts, setEmprunts] = useState([]);
     const [rechercheEffectuee, setRechercheEffectuee] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [erreur, setErreur] = useState("");
 
     const chercherEmprunts = () => {
 
@@ -16,6 +17,7 @@ function MesEmprunts() {
         }
 
         setLoading(true);
+        setErreur("");
 
         axios
         .get("http://localhost:5000/api/livres/emprunts", {
@@ -27,6 +29,7 @@ function MesEmprunts() {
         })
         .catch(err => {
             console.log("Erreur API :", err);
+            setErreur("Impossible de récupérer les emprunts.");
         })
         .finally(() => {
             setLoading(false);
@@ -37,7 +40,6 @@ function MesEmprunts() {
         <div>
             <h1>Mes emprunts</h1>
 
-            {/* FORMULAIRE */}
             <input
                 type="email"
                 placeholder="Entrer votre email"
@@ -49,22 +51,22 @@ function MesEmprunts() {
                 Voir mes emprunts
             </button>
 
-            {/* LOADING */}
             {loading && <p>Chargement...</p>}
+
+            {erreur && <p style={{ color: "red" }}>{erreur}</p>}
 
             <hr />
 
-            {/* AFFICHAGE */}
             {rechercheEffectuee && emprunts.length === 0 && (
                 <p>Aucun emprunt trouvé</p>
             )}
 
             {emprunts.map((e) => (
-                <div key={e.id_livre} style={{ marginBottom: "10px" }}>
-                    <h3>{e.titre}</h3>
-                    <p>Auteur : {e.auteur}</p>
-                    <p>📅 Emprunt : {e.date_emprunt}</p>
-                    <p>📆 Retour prévu : {e.date_retour_prevue}</p>
+                <div key={e.id_livre} className="emprunt-card" style={{ marginBottom: "10px" }}>
+                    <h3 className="titre">{e.titre}</h3>
+                    <p className="auteur">Auteur : {e.auteur}</p>
+                    <p className="date-emprunt">📅 Emprunt : {e.date_emprunt}</p>
+                    <p className="date-retour">📆 Retour prévu : {e.date_retour_prevue}</p>
                 </div>
             ))}
         </div>
